@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const jsonwebtoken = require('jsonwebtoken')
 
 const User = require('./UserModel')
 
@@ -17,6 +18,11 @@ app.use(bodyParser.json())
 app.post('/login', (req, res) => {
 	//authenticate user
 	//si ok, générer token
+	User.login(req.body.email, req.body.password)
+		.then(user => {
+			const token = jsonwebtoken.sign({ user }, process.env.SECRET_KEY)
+			res.json({success : 'Authentication succeeded! ', token})
+		})
 })
 
 app.post('/register', (req, res) => {
