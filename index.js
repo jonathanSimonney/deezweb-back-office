@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
+const User = require('./UserModel')
+
 const app = express()
 // const fs = require('fs-extra');  // file system
 const PORT = process.env.PORT
@@ -18,7 +20,13 @@ app.post('/login', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-	//...
+	User.register(req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.password_confirmation)
+		.then(user => {
+			res.json({ success: 'User account created! You can log in!' })
+		})
+		.catch(error => {
+			res.status(500).send(error.join(', '))
+		})
 })
 
 // app.listen(PORT, HOST, () => console.log("app démarrée sur localhost:9000"))
